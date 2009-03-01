@@ -1,0 +1,81 @@
+<b:widget id='Label1' locked='false' title='Tag Cloud' type='Label'>
+<b:includable id='main'>
+     <center>
+    	<b:if cond='data:title'>
+               <h3>
+                   <data:title/>
+               </h3>
+           </b:if>
+           <div class='widget-content'>
+               <div class='tag-cloud' id='tag-cloud'>
+                   <ul>
+                       <b:loop values='data:labels' var='label'>
+                           <li expr:id='&quot;tag-cloud-item-&quot;+data:label.name'>
+                               <b:if cond='data:blog.url == data:label.url'>
+                                   <data:label.name/>
+                                   <b:else/>
+                                   <a expr:href='data:label.url' expr:title='data:label.count'>
+                                       <data:label.name/>
+                                   </a>
+                               </b:if>
+                           </li>
+                       </b:loop>
+                   </ul>
+                   <b:include name='quickedit'/>
+               </div>
+           </div>
+       </center>
+       <script charset='utf-8' type='text/javascript'>
+           var labelWeights = new Array();
+           var maxSizeInEms = 4;
+           var minSizeInEms = 1;
+           var ignoreSizeInEms = 0.6;
+           var minimumLabelCountPercent = 20;
+           // Labels with at least this percentage or greater
+           // of the maximum will be displayed with scaling.
+           // If the label &#39;ruby&#39; has the maximum with 20
+           // posts, setting this var to 25 will only show
+           // labels with a count greater than 4 scaled up.
+		   // You can reduce minSizeInEms to 0 to hide unscaled tags
+		   // on most browsers. I know it doesn't work on Webkit/Safari/Chrome.
+
+           // ---- No edits beyond this point ----
+
+           var largestLabelCount = 1;
+           <b:loop values='data:labels' var='label'>labelWeights[&#39;<data:label.name/>&#39;] =<data:label.count/>;</b:loop>
+
+           for(key in labelWeights){
+               if(labelWeights[key] &gt; largestLabelCount)
+                   largestLabelCount = labelWeights[key];
+           }
+
+           var minimumLabelCount = largestLabelCount * (minimumLabelCountPercent / 100);
+
+           for(key in labelWeights){
+               if(labelWeights[key] &lt; minimumLabelCount){// ignore this label
+                   labelWeights[key] = ignoreSizeInEms;
+                   continue;
+               }
+           }
+
+           oneFraction = maxSizeInEms / largestLabelCount;
+
+
+           function applySizeToElement(labelName, labelCount){
+               var liTag = document.getElementById(&#39;tag-cloud-item-&#39;+labelName);
+               var size = labelCount * oneFraction;
+               if(labelCount == ignoreSizeInEms){
+                   size = labelCount;
+               }
+               else if (minSizeInEms &gt; size){
+                   size = minSizeInEms;
+               }
+               liTag.style.fontSize = size+&#39;em&#39;;
+           }
+
+           for(key in labelWeights){
+               applySizeToElement(key, labelWeights[key]);
+           }
+       </script>
+   </b:includable>
+</b:widget>
