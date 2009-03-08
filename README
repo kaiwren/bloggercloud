@@ -6,3 +6,7 @@ Blogger Cloud
 <YEAR> = 2009
 
 Released under the BSD licence (http://www.opensource.org/licenses/bsd-license.php).
+
+Instructions:
+Added the standard labels widget to your blog. Edit the template (in expanded mode). The widget will look something like the code provided minus the javascript in the <script> tags.
+Copy the javascript into your template, tweak the set of config variables at the top to suit, and you're good to go.
